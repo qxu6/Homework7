@@ -5,6 +5,26 @@ output:
     df_print: paged
 ---
 
+```{r}
+par(mfrow=c(2,4))
+
+#First I play around with my data set a bit to see if I notice any correlations between chlorophyll a and other variables based I what I know about chlorophyll
+plot(wq$`Chlorophyll a`)
+plot(wq$`1% Light Depth`, wq$`Chlorophyll a`)
+plot(wq$Depth, wq$`Chlorophyll a`)
+#Since chlorophyll is a light capturing component of plant cells I would expect less of it to exist at greater depths where sunlight penentration decreases  It's usuless for plant cells to have more chlorophyll in low light conditions waste of resources and energy
+plot(wq$`Manganese (Dissolved)`,wq$`Chlorophyll a`)
+plot(wq$`Manganese (Total)`, wq$`Chlorophyll a`)
+#Magnesium is a major building block for chlorophyll in general, so the more of that that is readily avaialable for plant cells to take in and mineralize, the more resources they have to create more chlorphyll if necessary
+plot(wq$`Ammonia (Total)`, wq$`Chlorophyll a`) #High pH and ammonia has a negative effect on photosynthesis and can damage plant cells.  Whule plants can take in ammonia as a form of nitrogen, it needs to be materialized rapidly as ammonia in its current form is toxic to the plant cell.  I feel in an environment where pH is high and ammonia concentrations are high, than plant cells will not thrive as well and major die offs are a possibility leading to a decrease in Chlrophyll
+plot(wq$pH, wq$`Chlorophyll a`)
+plot(wq$Oxygen, wq$`Chlorophyll a`)
+#Since within the chlorophyll during light dependent reactions, water gets split into hydrogen and O2 so I feel the greater concentration of plant cells and chlorophyll the more oxygen that should be released
+
+#While some of these plots are showing up blank for me during my pre-tests, I definitely can notice signs of relationships and correlations between some of the variables like depth and magnesium vs. chlorophyll concentrations.  These are variables I will look into using for my final predictive model
+
+```
+
 
 ```{r}
 library(tidyverse)
@@ -200,6 +220,15 @@ From the analysis above, I will go with the final.mod model. Let's take a look a
 Reference:https://www.statmethods.net/stats/rdiagnostics.html
           https://onlinecourses.science.psu.edu/stat501/node/36
           http://data.library.virginia.edu/diagnostic-plots/
+          
+```{r}
+chl_stats <- t(tibble(rmse = rmse(wq2com$`Chlorophyll a`,wq2com$`Chlorophyll a`.fromC), 
+                     mae = mae(wq2com$`Chlorophyll a`,wq2com$`Chlorophyll a`.fromC), 
+                     pbias = pbias(wq2com$`Chlorophyll a`,wq2com$`Chlorophyll a`.fromC), 
+                     cor = cor(wq2com$`Chlorophyll a`,wq2com$`Chlorophyll a`.fromC)))
+stats <- cbind(load.stats, conc.stats)
+```
+
 ```{r}
 #First, take a look at the results.
 summary(final.mod)
